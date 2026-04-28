@@ -257,12 +257,70 @@
                 document.getElementById('session-lat').value = lat;
                 document.getElementById('session-lng').value = lng;
                 statusEl.textContent = `📍 ${lat}, ${lng}`;
+                fetchWeatherData(lat, lng);
             },
             (err) => {
                 statusEl.textContent = 'Kunde inte hämta position';
             },
             { enableHighAccuracy: true, timeout: 10000 }
         );
+    }
+
+    async function fetchWeatherData(lat, lng) {
+        const statusEl = document.getElementById('gps-status');
+        try {
+            statusEl.textContent = `📍 ${lat}, ${lng} — hämtar väder...`;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&timezone=auto`;
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error('API error');
+            const data = await resp.json();
+            const current = data.current;
+
+            // Air temp — find closest option
+            const airTempEl = document.getElementById('session-air-temp');
+            if (current.temperature_2m != null && !airTempEl.value) {
+                const temp = Math.round(current.temperature_2m);
+                selectClosestOption(airTempEl, temp);
+            }
+
+            // Wind speed
+            const windSpeedEl = document.getElementById('session-wind-speed');
+            if (current.wind_speed_10m != null && !windSpeedEl.value) {
+                const speed = Math.round(current.wind_speed_10m);
+                selectClosestOption(windSpeedEl, speed);
+            }
+
+            // Wind direction — convert degrees to compass
+            const windDirEl = document.getElementById('session-wind-dir');
+            if (current.wind_direction_10m != null && !windDirEl.value) {
+                const compass = degreesToCompass(current.wind_direction_10m);
+                windDirEl.value = compass;
+            }
+
+            statusEl.textContent = `📍 ${lat}, ${lng} — väder hämtat ✓`;
+        } catch (e) {
+            statusEl.textContent = `📍 ${lat}, ${lng}`;
+        }
+    }
+
+    function selectClosestOption(selectEl, targetValue) {
+        let bestOption = '';
+        let bestDiff = Infinity;
+        for (const opt of selectEl.options) {
+            if (!opt.value) continue;
+            const diff = Math.abs(parseFloat(opt.value) - targetValue);
+            if (diff < bestDiff) {
+                bestDiff = diff;
+                bestOption = opt.value;
+            }
+        }
+        if (bestOption) selectEl.value = bestOption;
+    }
+
+    function degreesToCompass(deg) {
+        const dirs = ['N', 'NO', 'O', 'SO', 'S', 'SV', 'V', 'NV'];
+        const index = Math.round(deg / 45) % 8;
+        return dirs[index];
     }
 
     // ============== ANGLERS ==============
@@ -337,7 +395,7 @@
 
             html += `
                 <div class="catch-card" data-index="${idx}">
-                    <div class="catch-card-icon">🐟</div>
+                    <div class="catch-card-icon"></div>
                     <div class="catch-card-info">
                         <div class="catch-card-species">
                             ${escapeHtml(c.species)}
@@ -554,7 +612,7 @@
         } else {
             catches.forEach(c => {
                 html += `<div class="catch-card" style="margin-bottom:8px;">
-                    <div class="catch-card-icon">🐟</div>
+                    <div class="catch-card-icon"></div>
                     <div class="catch-card-info">
                         <div class="catch-card-species">${escapeHtml(c.species)}${c.angler ? ' <span class="tag">' + escapeHtml(c.angler) + '</span>' : ''}${c.released ? '<span class="badge-released">C&R</span>' : ''}</div>
                         <div class="catch-card-details">`;

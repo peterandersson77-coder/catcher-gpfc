@@ -4,8 +4,8 @@
     "description": "Logga dina fångster och analysera ditt fiske",
     "start_url": "./index.html",
     "display": "standalone",
-    "background_color": "#f0f4f8",
-    "theme_color": "#1a5276",
+    "background_color": "#f1f7ed",
+    "theme_color": "#1b4332",
     "orientation": "portrait",
     "icons": [
         {

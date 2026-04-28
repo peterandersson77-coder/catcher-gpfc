@@ -7,9 +7,9 @@
 
     const chartInstances = {};
     const CHART_COLORS = [
-        '#2980b9', '#27ae60', '#e74c3c', '#f39c12', '#9b59b6',
-        '#1abc9c', '#e67e22', '#3498db', '#2ecc71', '#e74c3c',
-        '#f1c40f', '#8e44ad', '#16a085', '#d35400', '#2c3e50'
+        '#2d6a4f', '#52b788', '#74c69d', '#40916c', '#95d5b2',
+        '#1b4332', '#3a5a40', '#2c6e6a', '#588157', '#a7c957',
+        '#b7e4c7', '#344e41', '#6b9080', '#8fbc8f', '#004b23'
     ];
 
     window.loadAnalysis = async function () {
