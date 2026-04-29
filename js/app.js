@@ -93,10 +93,10 @@
         }
         recentContainer.innerHTML = html;
 
-        // Click handlers
+        // Click handlers — go to catch mode (collapsed form)
         recentContainer.querySelectorAll('.session-card').forEach(card => {
             card.addEventListener('click', () => {
-                openSessionDetail(card.dataset.id);
+                openSessionForm(card.dataset.id);
             });
         });
     }
@@ -827,7 +827,7 @@
 
         container.querySelectorAll('.session-card').forEach(card => {
             card.addEventListener('click', () => {
-                openSessionDetail(card.dataset.id);
+                openSessionForm(card.dataset.id);
             });
         });
     }
