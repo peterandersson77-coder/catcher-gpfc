@@ -641,6 +641,14 @@
                 showToast('Fångst sparad! ✓');
                 openSessionDetail(currentSessionId);
             });
+        } else if (currentSessionId) {
+            // Session already saved — persist catch directly to DB
+            catchData.sessionId = currentSessionId;
+            storage.saveCatch(catchData).then(async () => {
+                showToast('Fångst sparad! ✓');
+                sessionCatches = await storage.getCatchesBySession(currentSessionId);
+                renderSessionCatches();
+            });
         } else if (editingCatchId !== null) {
             sessionCatches[editingCatchId] = { ...sessionCatches[editingCatchId], ...catchData };
             renderSessionCatches();
