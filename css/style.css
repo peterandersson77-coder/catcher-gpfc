@@ -705,6 +705,12 @@ body {
     line-height: 1;
 }
 
+.species-btn .species-svg {
+    width: 36px;
+    height: 36px;
+    color: var(--accent-dark);
+}
+
 .species-btn.active {
     border-color: var(--accent);
     background: rgba(82, 183, 136, 0.1);
@@ -768,26 +774,29 @@ body {
     transform: scale(0.95);
 }
 
-/* GPS Button */
-.btn-gps {
+/* Weather Fetch Button */
+.btn-weather-fetch {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background: var(--bg);
-    border: 1.5px solid var(--border);
+    gap: 8px;
+    background: linear-gradient(135deg, var(--water), var(--primary-light));
+    border: none;
     border-radius: var(--radius-sm);
-    padding: 9px 16px;
-    font-size: 0.85rem;
+    padding: 12px 20px;
+    font-size: 0.9rem;
     font-family: inherit;
-    color: var(--primary);
+    color: white;
     cursor: pointer;
     transition: all var(--transition);
-    font-weight: 500;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(44, 110, 106, 0.25);
+    width: 100%;
+    justify-content: center;
 }
 
-.btn-gps:active {
-    background: var(--border);
+.btn-weather-fetch:active {
     transform: scale(0.97);
+    opacity: 0.9;
 }
 
 .gps-status {
@@ -797,22 +806,79 @@ body {
     display: block;
 }
 
-/* Add Catch Button */
-.btn-add-catch {
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color: white;
-    border: none;
-    padding: 9px 18px;
-    border-radius: var(--radius-lg);
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all var(--transition);
-    box-shadow: 0 2px 8px rgba(27, 67, 50, 0.2);
+/* Add Catch Button — Big */
+.catches-section-prominent {
+    margin-top: 16px;
 }
 
-.btn-add-catch:active {
-    transform: scale(0.96);
+.btn-add-catch-big {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: white;
+    border: none;
+    padding: 18px 24px;
+    border-radius: var(--radius);
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: 0 4px 16px rgba(82, 183, 136, 0.3);
+    letter-spacing: 0.3px;
+    margin-bottom: 16px;
+}
+
+.btn-add-catch-big:active {
+    transform: scale(0.97);
+}
+
+/* Session Form Toggle */
+.btn-toggle-session {
+    width: 100%;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all var(--transition);
+    margin: 12px 0 0;
+    font-family: inherit;
+}
+
+.btn-toggle-session:active {
+    background: var(--border);
+}
+
+/* Collapsed form */
+.form-content.collapsed {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    transition: max-height 0.3s ease, opacity 0.2s ease;
+}
+
+/* Dashboard hero logo */
+.dashboard-hero {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0 8px;
+}
+
+.dashboard-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(13, 40, 24, 0.15));
 }
 
 /* Primary Button */

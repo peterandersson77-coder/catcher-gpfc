@@ -133,6 +133,18 @@
 
         document.getElementById('btn-get-gps').addEventListener('click', getGPS);
 
+        // Toggle session form collapse
+        document.getElementById('btn-toggle-session-form').addEventListener('click', () => {
+            const formEl = document.getElementById('session-form');
+            const toggle = document.getElementById('btn-toggle-session-form');
+            formEl.classList.toggle('collapsed');
+            if (formEl.classList.contains('collapsed')) {
+                toggle.textContent = 'Visa pass-info ▼';
+            } else {
+                toggle.textContent = 'Dölj pass-info ▲';
+            }
+        });
+
         // Anglers
         document.getElementById('btn-add-angler').addEventListener('click', addAngler);
         document.getElementById('angler-name-input').addEventListener('keydown', (e) => {
@@ -171,6 +183,7 @@
                 document.getElementById('session-wind-dir').value = session.windDirection || '';
                 document.getElementById('session-wind-speed').value = session.windSpeed || '';
                 document.getElementById('session-water-clarity').value = session.waterClarity || '';
+                document.getElementById('session-pressure').value = session.pressure || '';
 
                 document.getElementById('session-notes').value = session.notes || '';
 
@@ -192,10 +205,15 @@
             document.getElementById('session-date').value = new Date().toISOString().split('T')[0];
             document.getElementById('session-start').value = new Date().toTimeString().slice(0, 5);
             document.getElementById('gps-status').textContent = '';
-            sessionAnglers = [];
+            sessionAnglers = ['Olle', 'Peter'];
             renderAnglers();
             sessionCatches = [];
             renderSessionCatches();
+            // Expand session form for new sessions
+            const formEl = document.getElementById('session-form');
+            formEl.classList.remove('collapsed');
+            const toggle = document.getElementById('btn-toggle-session-form');
+            if (toggle) toggle.textContent = 'Dölj pass-info ▲';
         }
 
         showPage('page-session-form');
@@ -224,6 +242,7 @@
             waterTemp: parseFloatOrNull(document.getElementById('session-water-temp').value),
             windDirection: document.getElementById('session-wind-dir').value || null,
             windSpeed: parseFloatOrNull(document.getElementById('session-wind-speed').value),
+            pressure: parseFloatOrNull(document.getElementById('session-pressure').value),
             waterClarity: document.getElementById('session-water-clarity').value || null,
 
             anglers: sessionAnglers,
@@ -240,7 +259,12 @@
         }
 
         showToast('Fiskepass sparat! ✓');
-        navigateTo('dashboard');
+        
+        // Collapse session form to focus on catch reporting
+        const formEl = document.getElementById('session-form');
+        formEl.classList.add('collapsed');
+        const toggle = document.getElementById('btn-toggle-session-form');
+        if (toggle) toggle.textContent = 'Visa pass-info ▼';
     }
 
     function getGPS() {
@@ -271,7 +295,7 @@
         const statusEl = document.getElementById('gps-status');
         try {
             statusEl.textContent = `📍 ${lat}, ${lng} — hämtar väder...`;
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&timezone=auto`;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m,surface_pressure&wind_speed_unit=ms&timezone=auto`;
             const resp = await fetch(url);
             if (!resp.ok) throw new Error('API error');
             const data = await resp.json();
@@ -296,6 +320,12 @@
             if (current.wind_direction_10m != null && !windDirEl.value) {
                 const compass = degreesToCompass(current.wind_direction_10m);
                 windDirEl.value = compass;
+            }
+
+            // Air pressure
+            const pressureEl = document.getElementById('session-pressure');
+            if (current.surface_pressure != null && !pressureEl.value) {
+                pressureEl.value = Math.round(current.surface_pressure);
             }
 
             statusEl.textContent = `📍 ${lat}, ${lng} — väder hämtat ✓`;
@@ -656,12 +686,13 @@
         html += `</div>`;
 
         // Weather
-        if (session.weather || session.airTemp || session.waterTemp || session.windDirection) {
+        if (session.weather || session.airTemp || session.waterTemp || session.windDirection || session.pressure) {
             html += `<div class="detail-section"><h3>🌤️ Förhållanden</h3>`;
             if (session.weather) html += `<div class="detail-row"><span class="detail-label">Väder</span><span class="detail-value">${getWeatherEmoji(session.weather)} ${getWeatherLabel(session.weather)}</span></div>`;
             if (session.airTemp != null) html += `<div class="detail-row"><span class="detail-label">Lufttemp</span><span class="detail-value">${session.airTemp}°C</span></div>`;
             if (session.waterTemp != null) html += `<div class="detail-row"><span class="detail-label">Vattentemp</span><span class="detail-value">${session.waterTemp}°C</span></div>`;
             if (session.windDirection) html += `<div class="detail-row"><span class="detail-label">Vind</span><span class="detail-value">${session.windDirection} ${session.windSpeed ? session.windSpeed + ' m/s' : ''}</span></div>`;
+            if (session.pressure != null) html += `<div class="detail-row"><span class="detail-label">Lufttryck</span><span class="detail-value">${session.pressure} hPa</span></div>`;
             if (session.waterClarity) html += `<div class="detail-row"><span class="detail-label">Siktdjup</span><span class="detail-value">${getWaterClarityLabel(session.waterClarity)}</span></div>`;
 
             html += `</div>`;
