@@ -282,31 +282,27 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="catch-species">Art</label>
-                        <input type="text" id="catch-species" list="species-list" placeholder="T.ex. Gädda, Abborre..." required>
-                        <datalist id="species-list">
-                            <option value="Abborre">
-                            <option value="Gädda">
-                            <option value="Gös">
-                            <option value="Öring">
-                            <option value="Lax">
-                            <option value="Regnbåge">
-                            <option value="Röding">
-                            <option value="Harr">
-                            <option value="Sik">
-                            <option value="Lake">
-                            <option value="Asp">
-                            <option value="Id">
-                            <option value="Braxen">
-                            <option value="Mört">
-                            <option value="Karp">
-                            <option value="Sutare">
-                            <option value="Havskatt">
-                            <option value="Torsk">
-                            <option value="Makrill">
-                            <option value="Havsbass">
-                            <option value="Sej">
-                        </datalist>
+                        <label>Art</label>
+                        <input type="hidden" id="catch-species" value="Gädda">
+                        <div class="species-grid">
+                            <button type="button" class="species-btn active" data-species="Gädda">
+                                <span class="species-icon">🐊</span>
+                                <span>Gädda</span>
+                            </button>
+                            <button type="button" class="species-btn" data-species="Gös">
+                                <span class="species-icon">👁️</span>
+                                <span>Gös</span>
+                            </button>
+                            <button type="button" class="species-btn" data-species="Abborre">
+                                <span class="species-icon">🐟</span>
+                                <span>Abborre</span>
+                            </button>
+                            <button type="button" class="species-btn" data-species="Annat">
+                                <span class="species-icon">🎣</span>
+                                <span>Annat</span>
+                            </button>
+                        </div>
+                        <input type="text" id="catch-species-other" class="species-other-input" placeholder="Ange art..." style="display:none;">
                     </div>
 
                     <div class="form-row">
@@ -326,48 +322,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="catch-method">Metod</label>
-                        <select id="catch-method">
-                            <option value="">Välj...</option>
-                            <option value="spinn">Spinnfiske</option>
-                            <option value="fluga">Flugfiske</option>
-                            <option value="mete">Mete</option>
-                            <option value="pimpel">Pimpelfiske</option>
-                            <option value="trolling">Trolling</option>
-                            <option value="haspel">Haspelfiske</option>
-                            <option value="jerk">Jerkbait</option>
-                            <option value="bottenmete">Bottenmete</option>
-                            <option value="drop_shot">Drop shot</option>
-                            <option value="vertikalt">Vertikalfiske</option>
-                            <option value="annat">Annat</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="catch-bait-type">Betestyp</label>
-                        <select id="catch-bait-type">
-                            <option value="">Välj...</option>
-                            <option value="spinner">Spinner</option>
-                            <option value="skeddrag">Skeddrag</option>
-                            <option value="wobbler">Wobbler</option>
-                            <option value="jig">Jig</option>
-                            <option value="softbait">Softbait / Gummifisk</option>
-                            <option value="jerkbait">Jerkbait</option>
-                            <option value="mask">Mask</option>
-                            <option value="maggot">Maggot</option>
-                            <option value="räka">Räka</option>
-                            <option value="torrfluga">Torrfluga</option>
-                            <option value="nymf">Nymf</option>
-                            <option value="streamer">Streamer</option>
-                            <option value="balanspigg">Balanspigg</option>
-                            <option value="pilk">Pilk</option>
-                            <option value="levande_bete">Levande bete</option>
-                            <option value="dött_bete">Dött bete</option>
-                            <option value="majs">Corn / Majs</option>
-                            <option value="deg">Deg</option>
-                            <option value="boilie">Pop-up boilie</option>
-                            <option value="annat">Annat</option>
-                        </select>
+                        <label>Metod</label>
+                        <div class="method-grid">
+                            <button type="button" class="method-btn active" data-method="spinn">Spinnfiske</button>
+                            <button type="button" class="method-btn" data-method="mete">Mete</button>
+                            <button type="button" class="method-btn" data-method="trolling">Trolling</button>
+                            <button type="button" class="method-btn" data-method="vertikalt">Vertikalt</button>
+                            <button type="button" class="method-btn" data-method="annat">Annat</button>
+                        </div>
+                        <input type="hidden" id="catch-method" value="spinn">
                     </div>
 
                     <div class="form-group">
@@ -400,7 +363,7 @@
 
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="catch-released">
+                            <input type="checkbox" id="catch-released" checked>
                             <span>Återutsatt (catch & release)</span>
                         </label>
                     </div>
@@ -511,7 +474,7 @@
                     <canvas id="chart-watertemp"></canvas>
                 </div>
                 <div class="analysis-card">
-                    <h3>Bästa betestyper</h3>
+                    <h3>Bästa beten</h3>
                     <canvas id="chart-baits"></canvas>
                 </div>
                 <div class="analysis-card">

@@ -144,6 +144,7 @@
             detailCatchMode = false;
             document.getElementById('catch-form-title').textContent = 'Ny fångst';
             document.getElementById('catch-form').reset();
+            resetCatchFormDefaults();
             populateAnglerDropdown();
             document.getElementById('catch-modal').classList.add('open');
         });
@@ -389,7 +390,6 @@
             if (c.weight) details.push(`${c.weight} kg`);
             if (c.length) details.push(`${c.length} cm`);
             if (c.method) details.push(getMethodLabel(c.method));
-            if (c.baitType) details.push(getBaitTypeLabel(c.baitType));
             if (c.bait) details.push(c.bait);
             if (c.baitColor) details.push(c.baitColor);
 
@@ -441,16 +441,14 @@
         document.getElementById('catch-form-title').textContent = 'Redigera fångst';
         populateAnglerDropdown();
         document.getElementById('catch-angler').value = c.angler || '';
-        document.getElementById('catch-species').value = c.species || '';
         document.getElementById('catch-weight').value = c.weight || '';
         document.getElementById('catch-length').value = c.length || '';
         document.getElementById('catch-time').value = c.time || '';
-        document.getElementById('catch-method').value = c.method || '';
-        document.getElementById('catch-bait-type').value = c.baitType || '';
         document.getElementById('catch-bait').value = c.bait || '';
         document.getElementById('catch-bait-color').value = c.baitColor || '';
-        document.getElementById('catch-released').checked = c.released || false;
+        document.getElementById('catch-released').checked = c.released !== false;
         document.getElementById('catch-notes').value = c.notes || '';
+        setCatchFormValues(c);
 
         document.getElementById('catch-modal').classList.add('open');
     }
@@ -473,6 +471,83 @@
                 document.getElementById('catch-modal').classList.remove('open');
             }
         });
+
+        // Species buttons
+        document.querySelectorAll('.species-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.species-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const species = btn.dataset.species;
+                const otherInput = document.getElementById('catch-species-other');
+                if (species === 'Annat') {
+                    otherInput.style.display = '';
+                    otherInput.focus();
+                    document.getElementById('catch-species').value = '';
+                } else {
+                    otherInput.style.display = 'none';
+                    otherInput.value = '';
+                    document.getElementById('catch-species').value = species;
+                }
+            });
+        });
+
+        // Species other input sync
+        document.getElementById('catch-species-other').addEventListener('input', (e) => {
+            document.getElementById('catch-species').value = e.target.value.trim();
+        });
+
+        // Method buttons
+        document.querySelectorAll('.method-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('catch-method').value = btn.dataset.method;
+            });
+        });
+    }
+
+    function resetCatchFormDefaults() {
+        // Species: default Gädda
+        document.getElementById('catch-species').value = 'Gädda';
+        document.querySelectorAll('.species-btn').forEach(b => b.classList.remove('active'));
+        const defaultSpecies = document.querySelector('.species-btn[data-species="Gädda"]');
+        if (defaultSpecies) defaultSpecies.classList.add('active');
+        document.getElementById('catch-species-other').style.display = 'none';
+        document.getElementById('catch-species-other').value = '';
+
+        // Method: default Spinnfiske
+        document.getElementById('catch-method').value = 'spinn';
+        document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+        const defaultMethod = document.querySelector('.method-btn[data-method="spinn"]');
+        if (defaultMethod) defaultMethod.classList.add('active');
+
+        // Released: default checked
+        document.getElementById('catch-released').checked = true;
+    }
+
+    function setCatchFormValues(c) {
+        // Species
+        const speciesBtn = document.querySelector(`.species-btn[data-species="${c.species}"]`);
+        document.querySelectorAll('.species-btn').forEach(b => b.classList.remove('active'));
+        if (speciesBtn) {
+            speciesBtn.classList.add('active');
+            document.getElementById('catch-species').value = c.species;
+            document.getElementById('catch-species-other').style.display = 'none';
+            document.getElementById('catch-species-other').value = '';
+        } else {
+            // Custom species — select "Annat"
+            const annatBtn = document.querySelector('.species-btn[data-species="Annat"]');
+            if (annatBtn) annatBtn.classList.add('active');
+            document.getElementById('catch-species').value = c.species;
+            document.getElementById('catch-species-other').style.display = '';
+            document.getElementById('catch-species-other').value = c.species;
+        }
+
+        // Method
+        document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+        const methodBtn = document.querySelector(`.method-btn[data-method="${c.method}"]`);
+        if (methodBtn) methodBtn.classList.add('active');
+        document.getElementById('catch-method').value = c.method || 'spinn';
     }
 
     function saveCatch() {
@@ -491,7 +566,6 @@
             length: parseFloatOrNull(document.getElementById('catch-length').value),
             time: document.getElementById('catch-time').value || null,
             method: document.getElementById('catch-method').value || null,
-            baitType: document.getElementById('catch-bait-type').value || null,
             bait: document.getElementById('catch-bait').value.trim() || null,
             baitColor: document.getElementById('catch-bait-color').value.trim() || null,
             released: document.getElementById('catch-released').checked,
@@ -544,6 +618,7 @@
             detailCatchMode = true;
             document.getElementById('catch-form-title').textContent = 'Ny fångst';
             document.getElementById('catch-form').reset();
+            resetCatchFormDefaults();
             populateAnglerDropdown();
             document.getElementById('catch-modal').classList.add('open');
         });
@@ -621,7 +696,6 @@
                 if (c.weight) details.push(`${c.weight} kg`);
                 if (c.length) details.push(`${c.length} cm`);
                 if (c.method) details.push(getMethodLabel(c.method));
-                if (c.baitType) details.push(getBaitTypeLabel(c.baitType));
                 if (c.bait) details.push(c.bait);
                 if (c.baitColor) details.push(c.baitColor);
                 if (c.time) details.push(`kl ${c.time}`);

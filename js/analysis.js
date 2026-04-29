@@ -226,9 +226,9 @@
     }
 
     function renderBaitsChart(catches) {
-        const counts = countBy(catches, 'baitType');
+        const counts = countBy(catches, 'bait');
         const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-        const labels = sorted.map(s => window.FiskeApp.getBaitTypeLabel(s[0]));
+        const labels = sorted.map(s => s[0]);
         const data = sorted.map(s => s[1]);
 
         renderChart('chart-baits', 'bar', {
@@ -315,14 +315,7 @@
             insights.push(`<strong>Mest produktiva metod:</strong> ${window.FiskeApp.getMethodLabel(topMethod[0])} (${topMethod[1]} fångster)`);
         }
 
-        // Best bait type
-        const baitTypeCounts = countBy(catches, 'baitType');
-        const topBaitType = Object.entries(baitTypeCounts).sort((a, b) => b[1] - a[1])[0];
-        if (topBaitType) {
-            insights.push(`<strong>Bästa betestyp:</strong> ${window.FiskeApp.getBaitTypeLabel(topBaitType[0])} (${topBaitType[1]} fångster)`);
-        }
-
-        // Best specific bait
+        // Best bait
         const baitCounts = countBy(catches, 'bait');
         const topBait = Object.entries(baitCounts).sort((a, b) => b[1] - a[1])[0];
         if (topBait) {
