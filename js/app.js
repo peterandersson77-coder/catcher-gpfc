@@ -136,12 +136,14 @@
         // Toggle session form collapse
         document.getElementById('btn-toggle-session-form').addEventListener('click', () => {
             const formEl = document.getElementById('session-form');
-            const toggle = document.getElementById('btn-toggle-session-form');
-            formEl.classList.toggle('collapsed');
-            if (formEl.classList.contains('collapsed')) {
-                toggle.textContent = 'Visa pass-info ▼';
+            const isCollapsed = formEl.classList.contains('collapsed');
+            if (isCollapsed) {
+                expandSessionForm();
             } else {
-                toggle.textContent = 'Dölj pass-info ▲';
+                // Build session summary from current form values
+                const date = document.getElementById('session-date').value;
+                const loc = document.getElementById('session-location').value;
+                collapseSessionForm({ date, location: loc });
             }
         });
 
@@ -197,6 +199,9 @@
 
                 sessionCatches = await storage.getCatchesBySession(sessionId);
                 renderSessionCatches();
+
+                // Existing session — collapse form by default
+                collapseSessionForm(session);
             });
         } else {
             // New session
@@ -210,10 +215,7 @@
             sessionCatches = [];
             renderSessionCatches();
             // Expand session form for new sessions
-            const formEl = document.getElementById('session-form');
-            formEl.classList.remove('collapsed');
-            const toggle = document.getElementById('btn-toggle-session-form');
-            if (toggle) toggle.textContent = 'Dölj pass-info ▲';
+            expandSessionForm();
         }
 
         showPage('page-session-form');
@@ -261,10 +263,36 @@
         showToast('Fiskepass sparat! ✓');
         
         // Collapse session form to focus on catch reporting
+        collapseSessionForm(session);
+    }
+
+    function collapseSessionForm(session) {
         const formEl = document.getElementById('session-form');
-        formEl.classList.add('collapsed');
         const toggle = document.getElementById('btn-toggle-session-form');
+        const summary = document.getElementById('session-summary');
+        const summaryText = document.getElementById('session-summary-text');
+
+        formEl.classList.add('collapsed');
         if (toggle) toggle.textContent = 'Visa pass-info ▼';
+
+        // Show summary
+        if (summary && session) {
+            const parts = [];
+            if (session.date) parts.push(formatDate(session.date));
+            if (session.location) parts.push(session.location);
+            summaryText.textContent = parts.join(' — ') || 'Fiskepass';
+            summary.style.display = '';
+        }
+    }
+
+    function expandSessionForm() {
+        const formEl = document.getElementById('session-form');
+        const toggle = document.getElementById('btn-toggle-session-form');
+        const summary = document.getElementById('session-summary');
+
+        formEl.classList.remove('collapsed');
+        if (toggle) toggle.textContent = 'Dölj pass-info ▲';
+        if (summary) summary.style.display = 'none';
     }
 
     function getGPS() {
