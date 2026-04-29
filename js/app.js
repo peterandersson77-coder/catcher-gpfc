@@ -164,13 +164,14 @@
         });
     }
 
-    function openSessionForm(sessionId) {
+    function openSessionForm(sessionId, opts) {
+        const editMode = opts && opts.edit;
         currentSessionId = sessionId;
         const form = document.getElementById('session-form');
 
         if (sessionId) {
-            // Edit mode
-            document.getElementById('session-form-title').textContent = 'Redigera fiskepass';
+            // Existing session
+            document.getElementById('session-form-title').textContent = editMode ? 'Redigera fiskepass' : 'Fiskepass';
             storage.getSession(sessionId).then(async session => {
                 if (!session) return;
                 document.getElementById('session-date').value = session.date || '';
@@ -200,8 +201,12 @@
                 sessionCatches = await storage.getCatchesBySession(sessionId);
                 renderSessionCatches();
 
-                // Existing session — collapse form by default
-                collapseSessionForm(session);
+                // Edit mode → expanded, catch mode → collapsed
+                if (editMode) {
+                    expandSessionForm();
+                } else {
+                    collapseSessionForm(session);
+                }
             });
         } else {
             // New session
@@ -659,7 +664,7 @@
 
         document.getElementById('btn-edit-session').addEventListener('click', () => {
             if (currentSessionId) {
-                openSessionForm(currentSessionId);
+                openSessionForm(currentSessionId, { edit: true });
             }
         });
 
