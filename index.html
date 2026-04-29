@@ -351,31 +351,43 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="catch-bait">Bete</label>
-                        <input type="text" id="catch-bait" placeholder="T.ex. Mepps Aglia 3, Kräftimitation...">
+                        <label>Bete</label>
+                        <input type="hidden" id="catch-bait" value="">
+                        <div class="bait-category-grid">
+                            <button type="button" class="bait-cat-btn" data-bait-cat="Jigg">Jigg</button>
+                            <button type="button" class="bait-cat-btn" data-bait-cat="Hårdbete">Hårdbete</button>
+                            <button type="button" class="bait-cat-btn" data-bait-cat="Hybrid/tail">Hybrid/tail</button>
+                            <button type="button" class="bait-cat-btn" data-bait-cat="Spinnerbait/Bladed jig">Spinner/Bladed</button>
+                            <button type="button" class="bait-cat-btn" data-bait-cat="Wobbler">Wobbler</button>
+                        </div>
+                        <div class="bait-size-grid" id="bait-size-grid" style="display:none">
+                            <button type="button" class="bait-size-btn" data-bait-size="5-10">5-10</button>
+                            <button type="button" class="bait-size-btn" data-bait-size="11-15">11-15</button>
+                            <button type="button" class="bait-size-btn" data-bait-size="15-19">15-19</button>
+                            <button type="button" class="bait-size-btn" data-bait-size="20-23">20-23</button>
+                            <button type="button" class="bait-size-btn" data-bait-size="24+">24+</button>
+                        </div>
+                        <div class="bait-selection-display" id="bait-selection-display"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="catch-bait-color">Färg</label>
-                        <input type="text" id="catch-bait-color" list="color-list" placeholder="T.ex. Chartreuse, Silver, Firetiger...">
-                        <datalist id="color-list">
-                            <option value="Silver">
-                            <option value="Guld">
-                            <option value="Koppar">
-                            <option value="Chartreuse">
-                            <option value="Firetiger">
-                            <option value="Perch (abborre)">
-                            <option value="Svart">
-                            <option value="Vit">
-                            <option value="Röd">
-                            <option value="Orange">
-                            <option value="Rosa">
-                            <option value="Blå">
-                            <option value="Grön">
-                            <option value="Naturell">
-                            <option value="UV">
-                            <option value="Glow">
-                        </datalist>
+                        <select id="catch-bait-color">
+                            <option value="">Välj färg...</option>
+                            <option value="Blå/Silver">Blå/Silver</option>
+                            <option value="Motoroil">Motoroil</option>
+                            <option value="Motoroil hottail">Motoroil hottail</option>
+                            <option value="Firetiger">Firetiger</option>
+                            <option value="Röd/Svart">Röd/Svart</option>
+                            <option value="Naturtrogen">Naturtrogen</option>
+                            <option value="Vit">Vit</option>
+                            <option value="Svart">Svart</option>
+                            <option value="Koppar/Guld">Koppar/Guld</option>
+                            <option value="Guld/Svart">Guld/Svart</option>
+                            <option value="Grön">Grön</option>
+                            <option value="Grön/Vit">Grön/Vit</option>
+                            <option value="Burbout">Burbout</option>
+                        </select>
                     </div>
 
                     <div class="form-group">

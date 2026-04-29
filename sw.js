@@ -1,4 +1,4 @@
-const CACHE_NAME = 'catcher-v10';
+const CACHE_NAME = 'catcher-v11';
 const ASSETS = [
     './',
     './index.html',

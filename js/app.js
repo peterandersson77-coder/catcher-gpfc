@@ -567,6 +567,50 @@
                 document.getElementById('catch-method').value = btn.dataset.method;
             });
         });
+
+        // Bait category buttons
+        document.querySelectorAll('.bait-cat-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const wasActive = btn.classList.contains('active');
+                document.querySelectorAll('.bait-cat-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.bait-size-btn').forEach(b => b.classList.remove('active'));
+                const sizeGrid = document.getElementById('bait-size-grid');
+                if (wasActive) {
+                    sizeGrid.style.display = 'none';
+                    updateBaitValue();
+                } else {
+                    btn.classList.add('active');
+                    sizeGrid.style.display = '';
+                    updateBaitValue();
+                }
+            });
+        });
+
+        // Bait size buttons
+        document.querySelectorAll('.bait-size-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.bait-size-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                updateBaitValue();
+            });
+        });
+    }
+
+    function updateBaitValue() {
+        const catBtn = document.querySelector('.bait-cat-btn.active');
+        const sizeBtn = document.querySelector('.bait-size-btn.active');
+        const display = document.getElementById('bait-selection-display');
+        const hidden = document.getElementById('catch-bait');
+        if (catBtn) {
+            const cat = catBtn.dataset.baitCat;
+            const size = sizeBtn ? sizeBtn.dataset.baitSize + ' cm' : '';
+            const val = size ? `${cat} ${size}` : cat;
+            hidden.value = val;
+            display.textContent = val;
+        } else {
+            hidden.value = '';
+            display.textContent = '';
+        }
     }
 
     function resetCatchFormDefaults() {
@@ -586,6 +630,14 @@
 
         // Released: default checked
         document.getElementById('catch-released').checked = true;
+
+        // Bait: reset
+        document.querySelectorAll('.bait-cat-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.bait-size-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('bait-size-grid').style.display = 'none';
+        document.getElementById('catch-bait').value = '';
+        document.getElementById('bait-selection-display').textContent = '';
+        document.getElementById('catch-bait-color').value = '';
     }
 
     function setCatchFormValues(c) {
@@ -611,6 +663,31 @@
         const methodBtn = document.querySelector(`.method-btn[data-method="${c.method}"]`);
         if (methodBtn) methodBtn.classList.add('active');
         document.getElementById('catch-method').value = c.method || 'spinn';
+
+        // Bait — try to match category + size
+        document.querySelectorAll('.bait-cat-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.bait-size-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('bait-size-grid').style.display = 'none';
+        document.getElementById('catch-bait').value = c.bait || '';
+        document.getElementById('bait-selection-display').textContent = c.bait || '';
+        if (c.bait) {
+            const catBtns = document.querySelectorAll('.bait-cat-btn');
+            for (const cb of catBtns) {
+                if (c.bait.startsWith(cb.dataset.baitCat)) {
+                    cb.classList.add('active');
+                    document.getElementById('bait-size-grid').style.display = '';
+                    const sizePart = c.bait.replace(cb.dataset.baitCat, '').replace(' cm', '').trim();
+                    if (sizePart) {
+                        const sizeBtn = document.querySelector(`.bait-size-btn[data-bait-size="${sizePart}"]`);
+                        if (sizeBtn) sizeBtn.classList.add('active');
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Color
+        document.getElementById('catch-bait-color').value = c.baitColor || '';
     }
 
     function saveCatch() {
