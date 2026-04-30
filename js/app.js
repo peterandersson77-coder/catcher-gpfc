@@ -48,6 +48,36 @@
         document.getElementById('btn-new-session').addEventListener('click', () => {
             openSessionForm(null);
         });
+
+        // Export/Import
+        document.getElementById('btn-export-data').addEventListener('click', exportData);
+        document.getElementById('btn-import-data').addEventListener('change', importData);
+    }
+
+    async function exportData() {
+        const json = await storage.exportData();
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `catcher-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Data exporterad! ✓');
+    }
+
+    async function importData(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+            const text = await file.text();
+            const result = await storage.importData(text);
+            showToast(`Importerat ${result.sessions} pass & ${result.catches} fångster ✓`);
+            loadDashboard();
+        } catch (err) {
+            showToast('Import misslyckades: ' + err.message);
+        }
+        e.target.value = '';
     }
 
     function navigateTo(pageId) {

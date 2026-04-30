@@ -899,6 +899,52 @@ body {
     filter: drop-shadow(0 6px 20px rgba(13, 40, 24, 0.2));
 }
 
+/* Data management / backup */
+.data-management {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.data-management h3 {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.data-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-data {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.btn-data:active {
+    background: var(--bg);
+    transform: scale(0.97);
+}
+
+.btn-data-import {
+    cursor: pointer;
+}
+
 /* Bait category grid */
 .bait-category-grid {
     display: grid;
