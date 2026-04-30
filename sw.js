@@ -1,4 +1,4 @@
-const CACHE_NAME = 'catcher-v14';
+const CACHE_NAME = 'catcher-v15';
 const ASSETS = [
     './',
     './index.html',
@@ -8,6 +8,7 @@ const ASSETS = [
     './js/app.js',
     './js/analysis.js',
     './manifest.json',
+    './logo2.svg',
     './icons/fish.svg',
 ];
 
