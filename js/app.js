@@ -19,6 +19,7 @@
     // Init
     document.addEventListener('DOMContentLoaded', async () => {
         await storage.init();
+        requestPersistentStorage();
         setupNavigation();
         setupSessionForm();
         setupCatchForm();
@@ -26,6 +27,13 @@
         setupHistory();
         loadDashboard();
     });
+
+    // Request persistent storage so browser won't evict IndexedDB data
+    function requestPersistentStorage() {
+        if (navigator.storage && navigator.storage.persist) {
+            navigator.storage.persist();
+        }
+    }
 
     // ============== NAVIGATION ==============
 
