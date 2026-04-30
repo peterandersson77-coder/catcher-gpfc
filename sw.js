@@ -1,8 +1,9 @@
-const CACHE_NAME = 'catcher-v13';
+const CACHE_NAME = 'catcher-v14';
 const ASSETS = [
     './',
     './index.html',
     './css/style.css',
+    './js/firebase-sync.js',
     './js/storage.js',
     './js/app.js',
     './js/analysis.js',

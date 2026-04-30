@@ -62,7 +62,10 @@ class FiskeStorage {
             const tx = this.db.transaction('sessions', 'readwrite');
             const store = tx.objectStore('sessions');
             const request = store.put(session);
-            request.onsuccess = () => resolve(session);
+            request.onsuccess = () => {
+                cloudSync.saveSession(session);
+                resolve(session);
+            };
             request.onerror = (e) => reject(e.target.error);
         });
     }
@@ -95,7 +98,10 @@ class FiskeStorage {
         return new Promise((resolve, reject) => {
             tx.objectStore('sessions').delete(id);
             catches.forEach(c => tx.objectStore('catches').delete(c.id));
-            tx.oncomplete = () => resolve();
+            tx.oncomplete = () => {
+                cloudSync.deleteSession(id);
+                resolve();
+            };
             tx.onerror = (e) => reject(e.target.error);
         });
     }
@@ -115,7 +121,10 @@ class FiskeStorage {
             const tx = this.db.transaction('catches', 'readwrite');
             const store = tx.objectStore('catches');
             const request = store.put(catchData);
-            request.onsuccess = () => resolve(catchData);
+            request.onsuccess = () => {
+                cloudSync.saveCatch(catchData);
+                resolve(catchData);
+            };
             request.onerror = (e) => reject(e.target.error);
         });
     }
@@ -156,12 +165,40 @@ class FiskeStorage {
             const tx = this.db.transaction('catches', 'readwrite');
             const store = tx.objectStore('catches');
             const request = store.delete(id);
-            request.onsuccess = () => resolve();
+            request.onsuccess = () => {
+                cloudSync.deleteCatch(id);
+                resolve();
+            };
             request.onerror = (e) => reject(e.target.error);
         });
     }
 
     // === EXPORT / IMPORT ===
+
+    // Local-only saves (no cloud sync — used during sync-from-cloud)
+    async saveSessionLocal(session) {
+        if (!session.id) session.id = this.generateId();
+        session.updatedAt = session.updatedAt || new Date().toISOString();
+        if (!session.createdAt) session.createdAt = session.updatedAt;
+        return new Promise((resolve, reject) => {
+            const tx = this.db.transaction('sessions', 'readwrite');
+            tx.objectStore('sessions').put(session);
+            tx.oncomplete = () => resolve(session);
+            tx.onerror = (e) => reject(e.target.error);
+        });
+    }
+
+    async saveCatchLocal(catchData) {
+        if (!catchData.id) catchData.id = this.generateId();
+        catchData.updatedAt = catchData.updatedAt || new Date().toISOString();
+        if (!catchData.createdAt) catchData.createdAt = catchData.updatedAt;
+        return new Promise((resolve, reject) => {
+            const tx = this.db.transaction('catches', 'readwrite');
+            tx.objectStore('catches').put(catchData);
+            tx.oncomplete = () => resolve(catchData);
+            tx.onerror = (e) => reject(e.target.error);
+        });
+    }
 
     async exportData() {
         const sessions = await this.getAllSessions();

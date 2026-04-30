@@ -20,6 +20,7 @@
     document.addEventListener('DOMContentLoaded', async () => {
         await storage.init();
         requestPersistentStorage();
+        await autoSyncFromCloud();
         setupNavigation();
         setupSessionForm();
         setupCatchForm();
@@ -32,6 +33,50 @@
     function requestPersistentStorage() {
         if (navigator.storage && navigator.storage.persist) {
             navigator.storage.persist();
+        }
+    }
+
+    // Auto-sync: if local DB is empty, pull from cloud
+    async function autoSyncFromCloud() {
+        const sessions = await storage.getAllSessions();
+        if (sessions.length === 0) {
+            const cloud = await cloudSync.pullAll();
+            if (cloud && cloud.sessions.length > 0) {
+                for (const s of cloud.sessions) {
+                    await storage.saveSessionLocal(s);
+                }
+                for (const c of cloud.catches) {
+                    await storage.saveCatchLocal(c);
+                }
+                console.log(`Synced ${cloud.sessions.length} sessions from cloud`);
+            }
+        }
+    }
+
+    async function syncFromCloud() {
+        const cloud = await cloudSync.pullAll();
+        if (!cloud) {
+            showToast('Kunde inte hämta från molnet');
+            return;
+        }
+        for (const s of cloud.sessions) {
+            await storage.saveSessionLocal(s);
+        }
+        for (const c of cloud.catches) {
+            await storage.saveCatchLocal(c);
+        }
+        showToast(`Synkat ${cloud.sessions.length} pass & ${cloud.catches.length} fångster ✓`);
+        loadDashboard();
+    }
+
+    async function syncToCloud() {
+        const sessions = await storage.getAllSessions();
+        const catches = await storage.getAllCatches();
+        const ok = await cloudSync.pushAll(sessions, catches);
+        if (ok) {
+            showToast(`Uppladdat ${sessions.length} pass & ${catches.length} fångster ✓`);
+        } else {
+            showToast('Molnsynk misslyckades');
         }
     }
 
@@ -49,9 +94,14 @@
             openSessionForm(null);
         });
 
-        // Export/Import
+        // Export/Import/Sync
         document.getElementById('btn-export-data').addEventListener('click', exportData);
         document.getElementById('btn-import-data').addEventListener('change', importData);
+        document.getElementById('btn-sync-cloud').addEventListener('click', async () => {
+            showToast('Synkar...');
+            await syncToCloud();
+            await syncFromCloud();
+        });
     }
 
     async function exportData() {
